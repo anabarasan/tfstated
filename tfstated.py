@@ -239,4 +239,4 @@ app.add_url_rule('/unlock', view_func=state_view, methods=['UNLOCK'])
 
 if __name__ == '__main__':
     setup()
-    app.run(debug=True)
+    app.run()
