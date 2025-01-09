@@ -1,0 +1,7 @@
+[default]
+DATA_DIR=.
+
+[auth]
+ENABLED=true
+USERNAME=admin
+PASSWORD=changeme
