@@ -30,8 +30,8 @@ while calling terraform init configure the urls for the http backend
 ```
 terraform init \
 -backend-config="address=http://localhost:5000/state/<username>/<setupname>" \
--backend-config="lock_address=http://localhost:5000/<username>/<setupname>" \
--backend-config="unlock_address=http://localhost:5000/<username>/<setupname>"
+-backend-config="lock_address=http://localhost:5000/lock" \
+-backend-config="unlock_address=http://localhost:5000/unlock"
 ```
 
 ### Hardcoded configuration 
@@ -42,8 +42,8 @@ for single user config, you can hard code the configuration in the terraform fil
 terraform {
   backend "http" {
     address = "http://localhost:5000/state/anbarasan/a1b2c3"
-    lock_address = "http://localhost:5000/state/anbarasan/a1b2c3"
-    unlock_address = "http://localhost:5000/state/anbarasan/a1b2c3"
+    lock_address = "http://localhost:5000/state/lock"
+    unlock_address = "http://localhost:5000/state/unlock"
   }
 }
 ```
@@ -63,9 +63,9 @@ override.tf.json
     "terraform": {
         "backend": {
             "http": {
-                "address": "http://localhost:5000/state",
-                "lock_address": "http://localhost:5000/state",
-                "unlock_address": "http://localhost/:5000/state"
+                "address": "http://localhost:5000/state/anbarasan/a1b2c3",
+                "lock_address": "http://localhost:5000/lock",
+                "unlock_address": "http://localhost/:5000/unlock"
             }
         }
     }
