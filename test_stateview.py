@@ -81,7 +81,7 @@ class TestStateView(unittest.TestCase):
         
         # Test LOCK
         response = self.client.open(
-            '/state/anbarasan/a1b2c3',
+            '/lock',
             method='LOCK',
             json=test_lock_data,
             content_type='application/json'
@@ -97,7 +97,7 @@ class TestStateView(unittest.TestCase):
         
         # Test UNLOCK
         response = self.client.open(
-            '/state/anbarasan/a1b2c3',
+            '/unlock',
             method='UNLOCK',
             json=test_lock_data,
             content_type='application/json'
