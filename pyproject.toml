@@ -12,11 +12,6 @@ authors = [
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "blinker==1.9.0",
@@ -29,7 +24,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pylint"]
+dev = [
+    "black",
+    "pylint",
+]
 
 [build-system]
 requires = ["setuptools"]
@@ -42,4 +40,7 @@ py-modules = ["tfstated"]
 version = {attr = "tfstated.__version__"}
 
 [tool.pylint.messages_control]
-max-line-length = 120
+max-line-length = 80
+
+[tool.black]
+line-length = 80
