@@ -1,0 +1,45 @@
+[project]
+name = "tfstated"
+dynamic = ["version"]
+description = "terraform http backend"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+keywords = ["terraform", "tfstate"]
+authors = [
+    {name = "Anbarasan G", email = "nasarabna@gmail.com"},
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "blinker==1.9.0",
+    "click==8.1.8",
+    "Flask==3.1.0",
+    "itsdangerous==2.2.0",
+    "Jinja2==3.1.5",
+    "MarkupSafe==3.0.2",
+    "Werkzeug==3.1.3",
+]
+
+[project.optional-dependencies]
+dev = ["pylint"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["tfstated"]
+
+[tool.setuptools.dynamic]
+version = {attr = "tfstated.__version__"}
+
+[tool.pylint.messages_control]
+max-line-length = 120
