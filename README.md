@@ -29,7 +29,7 @@ while calling terraform init configure the urls for the http backend
 
 ```
 terraform init \
--backend-config="address=http://localhost:5000/state/<username>/<setupname>" \
+-backend-config="address=http://localhost:5000/state/<username>/<project_name>" \
 -backend-config="lock_address=http://localhost:5000/lock" \
 -backend-config="unlock_address=http://localhost:5000/unlock"
 ```

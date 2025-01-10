@@ -91,10 +91,10 @@ def requires_auth(f):
 
 # --- State Management ---
 class StateManager:
-    def __init__(self, user_id, setup_name):
+    def __init__(self, user_id, project_name):
         self.user_id = user_id
-        self.setup_name = setup_name
-        self.state_file = os.path.join(app.config['STATE_DIR'], f"{user_id}-{setup_name}.tfstate")
+        self.project_name = project_name
+        self.state_file = os.path.join(app.config['STATE_DIR'], f"{user_id}-{project_name}.tfstate")
 
     def get_state(self):
         return load_json(self.state_file)
@@ -129,8 +129,8 @@ class LockManager:
 # --- Views ---
 class StateView(MethodView):
     @requires_auth
-    def get(self, user_id, setup_name):
-        state_manager = StateManager(user_id, setup_name)
+    def get(self, user_id, project_name):
+        state_manager = StateManager(user_id, project_name)
         try:
             data = state_manager.get_state()
             return data
@@ -141,14 +141,14 @@ class StateView(MethodView):
             abort(500)
         
     @requires_auth
-    def post(self, user_id, setup_name):
+    def post(self, user_id, project_name):
         lock_manager = LockManager()
         
         lock_id = request.args.get('ID')
         if lock_id and not lock_manager.verify_lock(lock_id):
             abort(409, "The requested lock does not exist")
 
-        state_manager = StateManager(user_id, setup_name)
+        state_manager = StateManager(user_id, project_name)
 
         try:
             data = request.get_json()
@@ -160,8 +160,8 @@ class StateView(MethodView):
         return jsonify({'status': 'Created'})
         
     @requires_auth
-    def delete(self, user_id, setup_name):
-        state_manager = StateManager(user_id, setup_name)
+    def delete(self, user_id, project_name):
+        state_manager = StateManager(user_id, project_name)
         try:
             state_manager.delete_state()
         except OSError as exc:
@@ -233,7 +233,7 @@ def internal_server_error(e):
 
 # --- URL Routes ---
 state_view = StateView.as_view('state')
-app.add_url_rule('/state/<user_id>/<setup_name>', view_func=state_view, methods=['GET', 'POST', 'DELETE'])
+app.add_url_rule('/state/<user_id>/<project_name>', view_func=state_view, methods=['GET', 'POST', 'DELETE'])
 app.add_url_rule('/lock', view_func=state_view, methods=['LOCK'])
 app.add_url_rule('/unlock', view_func=state_view, methods=['UNLOCK'])
 
