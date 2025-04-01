@@ -109,19 +109,6 @@ def check_auth(username, password):
     )
 
 
-def authenticate():
-    """Send a 401 response that enables basic auth.
-
-    @return Response: HTTP 401 response with WWW-Authenticate header
-    """
-    return Response(
-        "Could not verify your access level for that URL.\n"
-        "You have to login with proper credentials",
-        401,
-        {"WWW-Authenticate": 'Basic realm="Login Required"'},
-    )
-
-
 def requires_auth(f):
     """Decorator that verifies authentication."""
 
@@ -131,7 +118,12 @@ def requires_auth(f):
             return f(*args, **kwargs)
         auth = request.authorization
         if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
+            return Response(
+                "Could not verify your access level for that URL.\n"
+                "You have to login with proper credentials",
+                401,
+                {"WWW-Authenticate": 'Basic realm="Login Required"'},
+            )
         return f(*args, **kwargs)
 
     return decorated
