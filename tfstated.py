@@ -77,19 +77,17 @@ def save_json(file_, data):
         shutil.move(tmp_file.name, file_)
 
 
-def ensure_directories(*dirs):
-    """Create given directories if they don't exist."""
+def setup():
+    """Initialize"""
+
+    # create required directories if it does not exist
+    dirs = (app.config["STATE_DIR"], app.config["LOCK_DIR"])
     for dir_ in dirs:
         try:
             os.makedirs(dir_, exist_ok=True)
         except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
-
-
-def setup():
-    """Initialize"""
-    ensure_directories(app.config["STATE_DIR"], app.config["LOCK_DIR"])
 
 
 # --- Authentication ---
