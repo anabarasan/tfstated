@@ -222,6 +222,49 @@ class TestOpenStateView(unittest.TestCase):
             headers=self.headers(),
         )
 
+    def test_duplicate_lock_fails_with_423(self):
+        """Test that duplicate lock fails with 423 status code"""
+        test_lock_data = {
+            "ID": "test-lock",
+            "Operation": "plan",
+            "Info": "test lock info",
+        }
+
+        # Create a lock
+        response = self.client.open(
+            "/lock",
+            method="LOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
+        # Attempt to create duplicate lock
+        response = self.client.open(
+            "/lock",
+            method="LOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+        self.assertEqual(response.status_code, 423)
+        self.assertEqual(
+            response.json,
+            {
+                "error": "Locked",
+                "message": "423 Locked: A Lock already exists",
+            },
+        )
+
+        # remove lock
+        response = self.client.open(
+            "/unlock",
+            method="UNLOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
 
 class TestAuthenticatedStateView(TestOpenStateView):
     def configure(self):
