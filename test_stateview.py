@@ -265,6 +265,31 @@ class TestOpenStateView(unittest.TestCase):
             headers=self.headers(),
         )
 
+    def test_unlock_invalid_id_fails_with_409(self):
+        """Test that unlocking an invalid lock ID fails with 409 status code"""
+        test_lock_data = {
+            "ID": "test-lock",
+            "Operation": "plan",
+            "Info": "test lock info",
+        }
+
+        # Attempt to unlock an invalid lock ID
+        response = self.client.open(
+            "/unlock",
+            method="UNLOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.json,
+            {
+                "error": "Conflict",
+                "message": "409 Conflict: Lock does not exist.",
+            },
+        )
+
 
 class TestAuthenticatedStateView(TestOpenStateView):
     def configure(self):
