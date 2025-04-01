@@ -290,6 +290,14 @@ class TestOpenStateView(unittest.TestCase):
             },
         )
 
+    def test_get_without_auth_fails_with_401(self):
+        """Test that GET request without authentication fails with 401 status code"""
+        if not app.config["AUTH_ENABLED"]:
+            self.skipTest("Skipping test as authentication is not enabled")
+
+        response = self.client.get("/state/anbarasan/a1b2c3")
+        self.assertEqual(response.status_code, 401)
+
 
 class TestAuthenticatedStateView(TestOpenStateView):
     def configure(self):
