@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 import unittest
-from tfstated import app, setup
+from tfstated import app, setup, check_auth
 
 
 class TestOpenStateView(unittest.TestCase):
@@ -293,10 +293,16 @@ class TestOpenStateView(unittest.TestCase):
     def test_get_without_auth_fails_with_401(self):
         """Test that GET request without authentication fails with 401 status code"""
         if not app.config["AUTH_ENABLED"]:
-            self.skipTest("Skipping test as authentication is not enabled")
+            self.skipTest("Skipping test as authentication is disabled")
 
         response = self.client.get("/state/anbarasan/a1b2c3")
         self.assertEqual(response.status_code, 401)
+
+    def test_check_auth_with_disabled_auth_returns_true(self):
+        """Test that check_auth returns True when authentication is disabled"""
+        if app.config["AUTH_ENABLED"]:
+            self.skipTest("Skipping test as authentication is enabled")
+        self.assertTrue(check_auth(None, None))
 
 
 class TestAuthenticatedStateView(TestOpenStateView):

@@ -287,12 +287,6 @@ class StateView(MethodView):
 
 
 # --- Error Handlers ---
-@app.errorhandler(400)
-def bad_request(e):
-    """Bad Request Handler"""
-    return jsonify({"error": "Bad Request", "message": str(e)}), 400
-
-
 @app.errorhandler(404)
 def page_not_found(e):  # pylint:disable=unused-argument
     """Page Not Found Handler"""
