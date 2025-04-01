@@ -145,6 +145,83 @@ class TestOpenStateView(unittest.TestCase):
         # Verify lock file is gone
         self.assertFalse(os.path.exists(lock_file_name))
 
+    def test_post_with_lock(self):
+        """Test POST request when state file is locked"""
+        test_data = {"version": 4, "check_results": True}
+        test_lock_data = {
+            "ID": "test-lock",
+            "Operation": "plan",
+            "Info": "test lock info",
+        }
+
+        # Create a lock
+        response = self.client.open(
+            "/lock",
+            method="LOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
+        # Attempt to POST state
+        response = self.client.post(
+            "/state/anbarasan/a1b2c3?ID=test-lock",
+            json=test_data,
+            headers=self.headers(),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # remove lock
+        response = self.client.open(
+            "/unlock",
+            method="UNLOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
+    def test_post_with_invalid_lock(self):
+        """Test POST request when lock ID doesn't match"""
+        test_data = {"version": 4, "check_results": True}
+        test_lock_data = {
+            "ID": "test-lock",
+            "Operation": "plan",
+            "Info": "test lock info",
+        }
+
+        # Create a lock
+        response = self.client.open(
+            "/lock",
+            method="LOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
+        # Attempt to POST state with different lock ID
+        response = self.client.post(
+            "/state/anbarasan/a1b2c3?ID=invalid-lock",
+            json=test_data,
+            headers=self.headers(),
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.json,
+            {
+                "error": "Conflict",
+                "message": "409 Conflict: The requested lock does not exist",
+            },
+        )
+
+        # remove lock
+        response = self.client.open(
+            "/unlock",
+            method="UNLOCK",
+            json=test_lock_data,
+            content_type="application/json",
+            headers=self.headers(),
+        )
+
 
 class TestAuthenticatedStateView(TestOpenStateView):
     def configure(self):
